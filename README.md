@@ -1,0 +1,2 @@
+# redis_pusher
+该工具用于将一系列的json文件中的数据通过pipeline的方式快速存储到redis的hmap中
