@@ -1,14 +1,14 @@
 [
   {
     "file_path": "/Users/huangxizhi/Downloads/secureCRT/result.txt",
-    "key_prefix": "read_stat_",
+    "key_prefix": "weekly_",
     "key_suffix_from_json_value": "device_id",
     "enable": true
   },
   {
     "file_path": "",
-    "key_prefix": "",
-    "key_suffix_from_json_value": "",
+    "key_prefix": "ndays_",
+    "key_suffix_from_json_value": "device_id",
     "enable": false
   }
 ]
