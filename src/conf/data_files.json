@@ -3,12 +3,14 @@
     "file_path": "/Users/huangxizhi/Downloads/secureCRT/result.txt",
     "key_prefix": "weekly_",
     "key_suffix_from_json_value": "device_id",
+    "expire": 10,
     "enable": true
   },
   {
     "file_path": "",
     "key_prefix": "ndays_",
     "key_suffix_from_json_value": "device_id",
+    "expire": 10,
     "enable": false
   }
 ]

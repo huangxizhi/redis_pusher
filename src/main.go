@@ -13,6 +13,7 @@ type DataItem struct {
 	FilePath string `json:"file_path"`
 	KeyPrefix string `json:"key_prefix"`
 	KeySuffixFromJsonValue string `json:"key_suffix_from_json_value"`
+	Expire int64 `json:"expire"`
 	Enable bool `json:"enable"`
 }
 
@@ -24,8 +25,6 @@ var (
 	redis_db int
 	pipelineBatch int
 )
-
-var redisTtl int64
 
 func init() {
 	var err error
@@ -51,11 +50,6 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-
-	redisTtl, err = beego.AppConfig.Int64("redis.ttl")
-	if err != nil {
-		panic(err)
-	}
 }
 
 func main() {
@@ -68,7 +62,7 @@ func main() {
 			continue
 		}
 		logs.Info("process file %d/%d:%s", i + 1, len(sourceFiles), item.FilePath)
-		err := pushOneJsonFile(conn, item, pipelineBatch, redisTtl)
+		err := pushOneJsonFile(conn, item, pipelineBatch)
 		if err != nil {
 			panic(err)
 		}
@@ -78,7 +72,7 @@ func main() {
 }
 
 // 将一个数据文件的内推送到redis中
-func pushOneJsonFile(conn redis.Conn, cfg DataItem, sendBatch int, expireVal int64) error {
+func pushOneJsonFile(conn redis.Conn, cfg DataItem, sendBatch int) error {
 	ch, err := utils.ReadFileByCh(cfg.FilePath)
 	if err != nil {
 		return err
@@ -100,8 +94,8 @@ func pushOneJsonFile(conn redis.Conn, cfg DataItem, sendBatch int, expireVal int
 				redisKey := cfg.KeyPrefix + fmt.Sprintf("%v", m[cfg.KeySuffixFromJsonValue])
 				for k, v := range m {
 					conn.Send("hset", redisKey, k, v)
-					if expireVal > 0 {
-						conn.Send("expire", redisKey, expireVal)
+					if cfg.Expire > 0 {
+						conn.Send("expire", redisKey, cfg.Expire)
 					}
 
 					attr_idx += 1
